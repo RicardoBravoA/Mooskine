@@ -15,7 +15,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     let dataController = DataController(modelName: "Mooskine")
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         dataController.load()
@@ -25,6 +24,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         notebooksListViewController.dataController = dataController
         
         return true
+    }
+    
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        saveViewContext()
+    }
+    
+    func applicationWillTerminate(_ application: UIApplication) {
+        saveViewContext()
+    }
+    
+    func saveViewContext() {
+        try? dataController.viewContext.save()
     }
 
 }

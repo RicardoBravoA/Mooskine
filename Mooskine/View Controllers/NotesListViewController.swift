@@ -70,7 +70,7 @@ class NotesListViewController: UIViewController, UITableViewDataSource {
     func addNote() {
         let note = Note(context: dataController.viewContext)
         note.text = "New note"
-        note.creationDate = Date()
+//        note.creationDate = Date()
         note.notebook = notebook
         try? dataController.viewContext.save()
         
@@ -152,6 +152,7 @@ class NotesListViewController: UIViewController, UITableViewDataSource {
         if let vc = segue.destination as? NoteDetailsViewController {
             if let indexPath = tableView.indexPathForSelectedRow {
                 vc.note = note(at: indexPath)
+                vc.dataController = dataController
 
                 vc.onDelete = { [weak self] in
                     if let indexPath = self?.tableView.indexPathForSelectedRow {
