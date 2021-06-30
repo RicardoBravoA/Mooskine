@@ -82,7 +82,11 @@ class NotesListViewController: UIViewController, UITableViewDataSource {
 
     // Deletes the `Note` at the specified index path
     func deleteNote(at indexPath: IndexPath) {
-//        notebook.removeNote(at: indexPath.row)
+        let noteDelete = note(at: indexPath)
+        dataController.viewContext.delete(noteDelete)
+        try? dataController.viewContext.save()
+        
+        notes.remove(at: indexPath.row)
         tableView.deleteRows(at: [indexPath], with: .fade)
         if numberOfNotes == 0 {
             setEditing(false, animated: true)
