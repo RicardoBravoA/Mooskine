@@ -14,6 +14,8 @@ class NotebooksListViewController: UIViewController, UITableViewDataSource {
 
     /// The `Notebook` objects being presented
     var notebooks: [Notebook] = []
+    
+    var dataController: DataController!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,8 +76,8 @@ class NotebooksListViewController: UIViewController, UITableViewDataSource {
 
     /// Adds a new notebook to the end of the `notebooks` array
     func addNotebook(name: String) {
-        let notebook = Notebook(name: name)
-        notebooks.append(notebook)
+//        let notebook = Notebook(name: name)
+//        notebooks.append(notebook)
         tableView.insertRows(at: [IndexPath(row: numberOfNotebooks - 1, section: 0)], with: .fade)
         updateEditButtonState()
     }
@@ -116,8 +118,11 @@ class NotebooksListViewController: UIViewController, UITableViewDataSource {
 
         // Configure cell
         cell.nameLabel.text = aNotebook.name
-        let pageString = aNotebook.notes.count == 1 ? "page" : "pages"
-        cell.pageCountLabel.text = "\(aNotebook.notes.count) \(pageString)"
+        
+        if let count = aNotebook.notes?.count {
+            let pageString = count == 1 ? "page" : "pages"
+            cell.pageCountLabel.text = "\(count) \(pageString)"
+        }
 
         return cell
     }
