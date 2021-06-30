@@ -22,6 +22,7 @@
 		A76557E81F8BC1FB00EFF9B8 /* OpenSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A76557E61F8BC1AC00EFF9B8 /* OpenSans-Regular.ttf */; };
 		A76557E91F8BC1FB00EFF9B8 /* OpenSans-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A76557E41F8BC1AC00EFF9B8 /* OpenSans-Semibold.ttf */; };
 		C6D22050268C207B00CE481D /* Mooskine.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C6D2204E268C207B00CE481D /* Mooskine.xcdatamodeld */; };
+		C6D22052268C25A500CE481D /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D22051268C25A500CE481D /* DataController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +55,7 @@
 		A76557E51F8BC1AC00EFF9B8 /* OpenSans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Bold.ttf"; sourceTree = "<group>"; };
 		A76557E61F8BC1AC00EFF9B8 /* OpenSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Regular.ttf"; sourceTree = "<group>"; };
 		C6D2204F268C207B00CE481D /* Mooskine.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Mooskine.xcdatamodel; sourceTree = "<group>"; };
+		C6D22051268C25A500CE481D /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,6 +141,7 @@
 			isa = PBXGroup;
 			children = (
 				C6D2204E268C207B00CE481D /* Mooskine.xcdatamodeld */,
+				C6D22051268C25A500CE481D /* DataController.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -293,6 +296,7 @@
 				03B2699E1F2F8AAA00C7433C /* NotebookCell.swift in Sources */,
 				C6D22050268C207B00CE481D /* Mooskine.xcdatamodeld in Sources */,
 				03B2699B1F2F8AA100C7433C /* NotebooksListViewController.swift in Sources */,
+				C6D22052268C25A500CE481D /* DataController.swift in Sources */,
 				03B2699C1F2F8AA100C7433C /* NoteDetailsViewController.swift in Sources */,
 				03B269A01F2F8AAD00C7433C /* Cell.swift in Sources */,
 				03B2699D1F2F8AA100C7433C /* NotesListViewController.swift in Sources */,
