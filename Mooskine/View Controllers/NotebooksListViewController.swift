@@ -9,30 +9,39 @@
 import UIKit
 import CoreData
 
-class NotebooksListViewController: UIViewController, UITableViewDataSource, NSFetchedResultsControllerDelegate {
+class NotebooksListViewController: UIViewController, UITableViewDataSource {
     /// A table view that displays a list of notebooks
     @IBOutlet weak var tableView: UITableView!
     
-    var dataController: DataController!
-    var fetchedResultsController: NSFetchedResultsController<Notebook>!
-
+    var dataController:DataController!
+    
+    var fetchedResultsController:NSFetchedResultsController<Notebook>!
+    
+    fileprivate func setupFetchedResultsController() {
+        let fetchRequest:NSFetchRequest<Notebook> = Notebook.fetchRequest()
+        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: "notebooks")
+        fetchedResultsController.delegate = self
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            fatalError("The fetch could not be performed: \(error.localizedDescription)")
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.titleView = UIImageView(image: #imageLiteral(resourceName: "toolbar-cow"))
         navigationItem.rightBarButtonItem = editButtonItem
-        
-        setUpFetchedResultsController()
-        
-        do {
-            try fetchedResultsController.performFetch()
-        } catch {
-            fatalError("The fetch could not be performded: \(error.localizedDescription)")
-        }
+
+        setupFetchedResultsController()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
+        setupFetchedResultsController()
         if let indexPath = tableView.indexPathForSelectedRow {
             tableView.deselectRow(at: indexPath, animated: false)
             tableView.reloadRows(at: [indexPath], with: .fade)
@@ -89,14 +98,14 @@ class NotebooksListViewController: UIViewController, UITableViewDataSource, NSFe
     func addNotebook(name: String) {
         let notebook = Notebook(context: dataController.viewContext)
         notebook.name = name
-//        notebook.creationDate = Date()
+        notebook.creationDate = Date()
         try? dataController.viewContext.save()
     }
 
     /// Deletes the notebook at the specified index path
     func deleteNotebook(at indexPath: IndexPath) {
-        let notebookDelete = fetchedResultsController.object(at: indexPath)
-        dataController.viewContext.delete(notebookDelete)
+        let notebookToDelete = fetchedResultsController.object(at: indexPath)
+        dataController.viewContext.delete(notebookToDelete)
         try? dataController.viewContext.save()
     }
 
@@ -133,7 +142,7 @@ class NotebooksListViewController: UIViewController, UITableViewDataSource, NSFe
             let pageString = count == 1 ? "page" : "pages"
             cell.pageCountLabel.text = "\(count) \(pageString)"
         }
-
+            
         return cell
     }
 
@@ -156,26 +165,9 @@ class NotebooksListViewController: UIViewController, UITableViewDataSource, NSFe
             }
         }
     }
-    
-    private func setUpFetchedResultsController() {
-        let fetchRequest: NSFetchRequest<Notebook> = Notebook.fetchRequest()
-        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
-        fetchRequest.sortDescriptors = [sortDescriptor]
-        
-        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: "notebooks")
-        fetchedResultsController.delegate = self
-    }
 }
 
-extension NotebooksListViewController {
-    
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.beginUpdates()
-    }
-    
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        tableView.endUpdates()
-    }
+extension NotebooksListViewController:NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         switch type {
@@ -183,15 +175,32 @@ extension NotebooksListViewController {
             tableView.insertRows(at: [newIndexPath!], with: .fade)
             break
         case .delete:
-            tableView.deleteRows(at: [newIndexPath!], with: .fade)
+            tableView.deleteRows(at: [indexPath!], with: .fade)
             break
         case .update:
-            tableView.reloadRows(at: [newIndexPath!], with: .fade)
+            tableView.reloadRows(at: [indexPath!], with: .fade)
         case .move:
             tableView.moveRow(at: indexPath!, to: newIndexPath!)
-        default:
-            break
         }
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+        let indexSet = IndexSet(integer: sectionIndex)
+        switch type {
+        case .insert: tableView.insertSections(indexSet, with: .fade)
+        case .delete: tableView.deleteSections(indexSet, with: .fade)
+        case .update, .move:
+            fatalError("Invalid change type in controller(_:didChange:atSectionIndex:for:). Only .insert or .delete should be possible.")
+        }
+    }
+
+    
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.beginUpdates()
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.endUpdates()
     }
     
 }
